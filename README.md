@@ -1,4 +1,4 @@
-# TileTactic
+# TileForge
 
 ## About
 This is a python libray to make tile maps and put tiles on it.
