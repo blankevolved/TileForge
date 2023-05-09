@@ -8,4 +8,4 @@ new_block = Block(f_color=Fore.RED)
 
 new_block.draw(new_map, 0, 0)
 
-new_map.redraw(2)
+new_map.redraw()

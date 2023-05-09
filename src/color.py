@@ -44,3 +44,8 @@ class Back:
     L_BLACK = c.Back.LIGHTBLACK_EX
     L_WHITE = c.Back.LIGHTWHITE_EX
 
+
+class Style:
+    BRIGHT = c.Style.BRIGHT
+    DIM = c.Style.DIM
+    NORMAL = c.Style.NORMAL
