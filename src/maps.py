@@ -1,19 +1,19 @@
-from src.color import F_DEFAULT, FULL_RESET, B_DEFAULT
+from src.color import Fore, FULL_RESET, Back
 
 
 class Map:
     def __init__(self, x: int, y: int, base_tile='-'):
-        self.x_range = range(1, x+1)
-        self.y_range = range(1, y+1)
+        self.x_range = range(0, x)
+        self.y_range = range(0, y)
         self.base_tile = base_tile
-        self.f_base_color = F_DEFAULT
-        self.b_base_color = B_DEFAULT
+        self.f_base_color = Fore.DEFAULT
+        self.b_base_color = Back.DEFAULT
         self.cords = {}
         for yr in self.y_range:
             for xr in self.x_range:
                 self.cords[xr, yr] = {'tile': self.base_tile, 'f_color': self.f_base_color, 'b_color': self.b_base_color}
 
-    def print(self):
+    def draw(self):
         for current_key in self.cords.keys():
             cord_key = self.cords.get(current_key)
             if current_key[0] == self.x_range[-1]:
