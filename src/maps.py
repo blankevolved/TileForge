@@ -1,4 +1,6 @@
 from src.color import Fore, FULL_RESET, Back
+import time
+from src.tools import clear
 
 
 class Map:
@@ -21,5 +23,10 @@ class Map:
             else:
                 print(f"{cord_key['f_color']}{cord_key['b_color']}{cord_key['tile']}{FULL_RESET}", end='')
 
-
-
+    def redraw(self, x_seconds: int, add_inp: bool = False, inp_prompt: str = '>>> '):
+        while True:
+            clear()
+            time.sleep(x_seconds)
+            self.draw()
+            if add_inp:
+                input(inp_prompt)
