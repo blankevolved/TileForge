@@ -6,14 +6,16 @@ This is a python libray to make tile maps and put tiles on it.
 ## Features
 
 ### Completed
-* None
+* Colored Tiles
+* Tile maps
+* Tiles/Block (Non movable objects)
+* Tiles/Entity (Movable, player like objects that can move)
+
+### Working on
+* Export a tile map to file
 
 ### Planned
-* Tile maps
-* Tiles/Block (Non movable, objects you can colide with)
-* Tiles/Entity (Moveable, player like objects that can move)
-* Colored Tiles
+* Tiles/Block collision
 
 ### Just ideas
 * Make a tile map from file
-* Export a tile map to file
