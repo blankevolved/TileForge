@@ -12,10 +12,11 @@ This is a python libray to make tile maps and put tiles on it.
 * Tiles/Entity (Movable, player like objects that can move)
 
 ### Working on
-* Export a tile map to file
+* Editor Mode
 
 ### Planned
 * Tiles/Block collision
+* Export a tile map to file
 
 ### Just ideas
 * Make a tile map from file
