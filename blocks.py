@@ -1,4 +1,4 @@
-from src.color import Fore, Back
+from color import Fore, Back
 
 
 class Block:

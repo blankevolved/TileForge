@@ -23,6 +23,26 @@ class Fore:
     L_BLACK = c.Fore.LIGHTBLACK_EX
     L_WHITE = c.Fore.LIGHTWHITE_EX
 
+    JSON = {
+        'default': DEFAULT,
+        'red': RED,
+        'blue': BLUE,
+        'yellow': YELLOW,
+        'green': GREEN,
+        'cyan': CYAN,
+        'magenta': MAGENTA,
+        'black': BLACK,
+        'white': WHITE,
+        'l_red': L_RED,
+        'l_blue': L_BLUE,
+        'l_yellow': L_YELLOW,
+        'l_green': L_GREEN,
+        'l_cyan': L_CYAN,
+        'l_magenta': L_MAGENTA,
+        'l_black': L_BLACK,
+        'l_white': L_WHITE,
+    }
+
 
 class Back:
     DEFAULT = c.Back.RESET
@@ -44,6 +64,25 @@ class Back:
     L_BLACK = c.Back.LIGHTBLACK_EX
     L_WHITE = c.Back.LIGHTWHITE_EX
 
+    JSON = {
+        'default': DEFAULT,
+        'red': RED,
+        'blue': BLUE,
+        'yellow': YELLOW,
+        'green': GREEN,
+        'cyan': CYAN,
+        'magenta': MAGENTA,
+        'black': BLACK,
+        'white': WHITE,
+        'l_red': L_RED,
+        'l_blue': L_BLUE,
+        'l_yellow': L_YELLOW,
+        'l_green': L_GREEN,
+        'l_cyan': L_CYAN,
+        'l_magenta': L_MAGENTA,
+        'l_black': L_BLACK,
+        'l_white': L_WHITE,
+    }
 
 class Style:
     BRIGHT = c.Style.BRIGHT

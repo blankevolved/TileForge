@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# other
+map_files/
+test.py
+
 # C extensions
 *.so
 
