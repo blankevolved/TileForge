@@ -2,10 +2,13 @@ from maps import Map
 from modules.JSave.jsave import save_to_file, load_from_file
 import os
 from color import FULL_RESET, Fore, Back
+import json
 
-VER_NUM = 1
+VER_NUM = 2
 
 cur_map = None
+
+cur_cord = None
 
 cur_map_name = None
 
@@ -14,24 +17,24 @@ def version():
     print(f'Editor Version: v{VER_NUM}')
 
 
-def load_map():
-    file_name = input('File name: ')
+def load_map(file_name: str = ''):
+    if file_name == '':
+        file_name = input('File name: ')
     global cur_map, cur_map_name
     try:
         loaded_map = load_from_file(f'map_files/{file_name}.json')
-        cur_map_name = file_name
         cur_map = Map(loaded_map['x'], loaded_map['y'], loaded_map['tile'], loaded_map['scale'])
         cur_map.f_color = loaded_map['f_color']
         cur_map.b_color = loaded_map['b_color']
-        # noinspection PyUnresolvedReferences
-        for yr in cur_map.y_range:
-            # noinspection PyUnresolvedReferences
-            for xr in cur_map.x_range:
-                # noinspection PyUnresolvedReferences
-                cur_map.cords[xr, yr] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
+        cur_map_name = file_name
+        for c in loaded_map['cords']:
+            cur_map.cords[tuple(json.loads(c))] = {'tile': loaded_map['cords'][c]['tile'], 'f_color': loaded_map['cords'][c]['f_color'], 'b_color': loaded_map['cords'][c]['b_color']}
 
     except TypeError:
-        print('cant load file')
+        if '.json' in file_name:
+            print(f'Cant load file, you dont need to add ".json" to "{file_name}"')
+        else:
+            print(f'Cant load file, check if the file is in the "map_files" folder or if a map with the name "{file_name}" exists')
 
 
 def test_map():
@@ -51,10 +54,14 @@ def create_map():
     scale_val = int(input('Scale: '))
     cur_map = Map(x_val, y_val, scale=scale_val)
     cur_map_name = file_name
+    new_cords = {}
+    for c in cur_map.cords:
+        new_cords[json.dumps(c)] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
     json_save = {
         'x': cur_map.x,
         'y': cur_map.y,
         'scale': cur_map.scale,
+        'cords': new_cords,
         'f_color': cur_map.f_color,
         'b_color': cur_map.b_color,
         'tile': cur_map.tile
@@ -80,9 +87,47 @@ Scale: {cur_map.scale}""")
         print('please load or create a map')
 
 
+# noinspection PyUnresolvedReferences
 def edit_property():
-    if type(cur_map) == Map:
-        print('x\ny\ntile\nf_color\nb_color\nrange')
+    global cur_map, cur_map_name
+
+    if type(cur_map) == Map and cur_cord is not None:
+        print('tile\nf_color\nb_color')
+        inp = input('Option to change: ')
+
+        if inp == 'tile':
+            new = input(f'New value for {inp}: ')
+            cur_map.cords[cur_cord]['tile'] = new
+
+        if inp == 'f_color':
+            new = input(f'New value for {inp}: ')
+            cur_map.cords[cur_cord]['f_color'] = Fore.JSON[new]
+
+        if inp == 'b_color':
+            new = input(f'New value for {inp}: ')
+            cur_map.cords[cur_cord]['b_color'] = Back.JSON[new]
+
+        new_cords = {}
+        for c in cur_map.cords:
+            new_cords[json.dumps(c)] = {'tile': cur_map.cords[c]['tile'], 'f_color': cur_map.cords[c]['f_color'], 'b_color': cur_map.cords[c]['b_color']}
+
+        new_cords[json.dumps(cur_cord)] = {'tile': cur_map.cords[cur_cord]['tile'], 'f_color': cur_map.cords[cur_cord]['f_color'], 'b_color': cur_map.cords[cur_cord]['b_color']}
+
+        json_save = {
+            'x': cur_map.x,
+            'y': cur_map.y,
+            'scale': cur_map.scale,
+            'cords': new_cords,
+            'f_color': cur_map.f_color,
+            'b_color': cur_map.b_color,
+            'tile': cur_map.tile
+        }
+        save_to_file(f'map_files/{cur_map_name}.json', json_save)
+
+        load_map(str(cur_map_name))
+
+    elif type(cur_map) == Map:
+        print('x\ny\ntile\nrange\nf_color\nb_color')
         inp = input('Option to change: ')
 
         if inp == 'x':
@@ -95,41 +140,67 @@ def edit_property():
             cur_map.y = new
             cur_map.y_range = range(0, new)
 
+        if inp == 'range':
+            new = int(input(f'New value for {inp}: '))
+            cur_map.range = new
+
         if inp == 'tile':
             new = input(f'New value for {inp}: ')
             cur_map.tile = new
 
         if inp == 'f_color':
+            print('Warning, this will turn all colors on the map to this color!')
             new = input(f'New value for {inp}: ')
             cur_map.f_color = Fore.JSON[new]
 
         if inp == 'b_color':
+            print('Warning, this will turn all colors on the map to this color!')
             new = input(f'New value for {inp}: ')
             cur_map.b_color = Back.JSON[new]
 
-        if inp == 'range':
-            new = int(input(f'New value for {inp}: '))
-            cur_map.range = new
+        new_cords = {}
 
-        # noinspection PyUnresolvedReferences
-        for yr in cur_map.y_range:
-            # noinspection PyUnresolvedReferences
-            for xr in cur_map.x_range:
-                # noinspection PyUnresolvedReferences
-                cur_map.cords[xr, yr] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
+        for c in cur_map.cords:
+            new_cords[json.dumps(c)] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
 
-        # noinspection PyUnresolvedReferences
         json_save = {
             'x': cur_map.x,
             'y': cur_map.y,
             'scale': cur_map.scale,
+            'cords': new_cords,
             'f_color': cur_map.f_color,
             'b_color': cur_map.b_color,
             'tile': cur_map.tile
         }
-
         save_to_file(f'map_files/{cur_map_name}.json', json_save)
 
+        load_map(str(cur_map_name))
+
+    else:
+        print('please load or create a map')
+
+
+# noinspection PyUnresolvedReferences
+def select_cord():
+    if type(cur_map) == Map:
+        global cur_cord
+        print(f'Max X: {cur_map.x_range[-1]}')
+        print(f'Max Y: {cur_map.y_range[-1]}')
+        print('Set both X and Y to -1 to select whole map')
+        cord_x = input('X cord: ')
+        cord_y = input('Y cord: ')
+        try:
+            int_x = int(cord_x)
+            int_y = int(cord_y)
+
+            if (int_x, int_y) in cur_map.cords:
+                cur_cord = (int_x, int_y)
+            elif int_x == -1 and int_y == -1:
+                cur_cord = None
+            else:
+                print("that isn't a valid cord")
+        except TypeError:
+            print('x or y was not an int')
     else:
         print('please load or create a map')
 
@@ -162,10 +233,15 @@ COMMAND_LIST = [
     {
         'cmds': ['t'],
         'exec': test_map
+    },
+    {
+        'cmds': ['sc'],
+        'exec': select_cord
     }
 ]
 
-shortcuts = """v> show version\t\tc> create new map\t\tl> load map\t\tp> list properties of map\t\te> edit a property\t\tt> test what the map will look like"""
+shortcuts = """v> show version\t\tc> create new map\t\tl> load map\t\tp> list properties of map
+e> edit a property\t\tt> test what the map will look like\t\tsc> select a coordinate"""
 
 
 def check_inp(input_object):
@@ -180,7 +256,7 @@ def main():
 
     print(shortcuts)
 
-    inp = input(f'{cur_map_name}> ')
+    inp = input(f'{cur_map_name}/{cur_cord}> ')
 
     check_inp(inp)
 
