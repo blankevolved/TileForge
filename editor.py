@@ -14,7 +14,7 @@ cur_map_name = None
 
 
 def version():
-    print(f'Editor Version: v{VER_NUM}')
+    print(f'Tile Forge Editor: v{VER_NUM}')
 
 
 def load_map(file_name: str = ''):
