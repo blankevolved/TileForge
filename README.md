@@ -11,7 +11,7 @@ This is a python libray to make tile maps and put tiles on it.
 * Tiles/Block (Non movable objects)
 * Tiles/Entity (Movable, player like objects that can move)
 * Export a tile map to file
-* Editor Mode (v2)
+* Editor Mode (v2.1)
 
 ### Working on
 * None

@@ -4,7 +4,7 @@ import os
 from color import FULL_RESET, Fore, Back
 import json
 
-VER_NUM = 2
+VER_NUM = 2.1
 
 cur_map = None
 
@@ -20,13 +20,14 @@ def version():
 def load_map(file_name: str = ''):
     if file_name == '':
         file_name = input('File name: ')
-    global cur_map, cur_map_name
+    global cur_map, cur_map_name, cur_cord
     try:
         loaded_map = load_from_file(f'map_files/{file_name}.json')
         cur_map = Map(loaded_map['x'], loaded_map['y'], loaded_map['tile'], loaded_map['scale'])
         cur_map.f_color = loaded_map['f_color']
         cur_map.b_color = loaded_map['b_color']
         cur_map_name = file_name
+        cur_cord = None
         for c in loaded_map['cords']:
             cur_map.cords[tuple(json.loads(c))] = {'tile': loaded_map['cords'][c]['tile'], 'f_color': loaded_map['cords'][c]['f_color'], 'b_color': loaded_map['cords'][c]['b_color']}
 
@@ -49,28 +50,31 @@ def create_map():
     global cur_map, cur_map_name
 
     file_name = input('File name: ')
-    x_val = int(input('Width: '))
-    y_val = int(input('Height: '))
-    scale_val = int(input('Scale: '))
-    cur_map = Map(x_val, y_val, scale=scale_val)
-    cur_map_name = file_name
-    new_cords = {}
-    for c in cur_map.cords:
-        new_cords[json.dumps(c)] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
-    json_save = {
-        'x': cur_map.x,
-        'y': cur_map.y,
-        'scale': cur_map.scale,
-        'cords': new_cords,
-        'f_color': cur_map.f_color,
-        'b_color': cur_map.b_color,
-        'tile': cur_map.tile
-    }
     try:
-        save_to_file(f'map_files/{file_name}.json', json_save)
-    except FileNotFoundError:
-        os.mkdir('map_files')
-        save_to_file(f'map_files/{file_name}.json', json_save)
+        x_val = int(input('Width: '))
+        y_val = int(input('Height: '))
+        scale_val = int(input('Scale: '))
+        cur_map = Map(x_val, y_val, scale=scale_val)
+        cur_map_name = file_name
+        new_cords = {}
+        for c in cur_map.cords:
+            new_cords[json.dumps(c)] = {'tile': cur_map.tile, 'f_color': cur_map.f_color, 'b_color': cur_map.b_color}
+        json_save = {
+            'x': cur_map.x,
+            'y': cur_map.y,
+            'scale': cur_map.scale,
+            'cords': new_cords,
+            'f_color': cur_map.f_color,
+            'b_color': cur_map.b_color,
+            'tile': cur_map.tile
+        }
+        try:
+            save_to_file(f'map_files/{file_name}.json', json_save)
+        except FileNotFoundError:
+            os.mkdir('map_files')
+            save_to_file(f'map_files/{file_name}.json', json_save)
+    except ValueError:
+        print('One or more of the values you selected, were not an integer')
 
 
 def list_props():
@@ -97,15 +101,21 @@ def edit_property():
 
         if inp == 'tile':
             new = input(f'New value for {inp}: ')
-            cur_map.cords[cur_cord]['tile'] = new
+            cur_map.cords[cur_cord][inp] = new
 
         if inp == 'f_color':
             new = input(f'New value for {inp}: ')
-            cur_map.cords[cur_cord]['f_color'] = Fore.JSON[new]
+            try:
+                cur_map.cords[cur_cord]['f_color'] = Fore.JSON[new]
+            except KeyError:
+                print('Please select a valid color')
 
         if inp == 'b_color':
             new = input(f'New value for {inp}: ')
-            cur_map.cords[cur_cord]['b_color'] = Back.JSON[new]
+            try:
+                cur_map.cords[cur_cord]['b_color'] = Back.JSON[new]
+            except KeyError:
+                print('Please select a valid color')
 
         new_cords = {}
         for c in cur_map.cords:
@@ -151,12 +161,18 @@ def edit_property():
         if inp == 'f_color':
             print('Warning, this will turn all colors on the map to this color!')
             new = input(f'New value for {inp}: ')
-            cur_map.f_color = Fore.JSON[new]
+            try:
+                cur_map.f_color = Fore.JSON[new]
+            except KeyError:
+                print('Please select a valid color')
 
         if inp == 'b_color':
             print('Warning, this will turn all colors on the map to this color!')
             new = input(f'New value for {inp}: ')
-            cur_map.b_color = Back.JSON[new]
+            try:
+                cur_map.b_color = Back.JSON[new]
+            except KeyError:
+                print('Please select a valid color')
 
         new_cords = {}
 
