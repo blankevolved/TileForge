@@ -4,7 +4,7 @@ import os
 from color import FULL_RESET, Fore, Back
 import json
 
-VER_NUM = 2.1
+VER_NUM = 2.2
 
 cur_map = None
 
@@ -101,7 +101,10 @@ def edit_property():
 
         if inp == 'tile':
             new = input(f'New value for {inp}: ')
-            cur_map.cords[cur_cord][inp] = new
+            if len(new) > 1:
+                print('tiles can only be 1 char long!')
+            else:
+                cur_map.cords[cur_cord][inp] = new
 
         if inp == 'f_color':
             new = input(f'New value for {inp}: ')
@@ -156,7 +159,10 @@ def edit_property():
 
         if inp == 'tile':
             new = input(f'New value for {inp}: ')
-            cur_map.tile = new
+            if len(new) > 1:
+                print('tiles can only be 1 char long!')
+            else:
+                cur_map.tile = new
 
         if inp == 'f_color':
             print('Warning, this will turn all colors on the map to this color!')
